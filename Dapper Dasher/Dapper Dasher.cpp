@@ -3,43 +3,52 @@
 int main() {
 	const int windowWidth = 512;
 	const int windowHeight = 380;
+	InitWindow(windowWidth, windowHeight, "Dapper Dasher");
 
-	//rect dimensions
-	const int width = 50;
-	const int height = 80;
 
-	int posY = windowHeight - height;
-	int vel = 0;
-
-	//acceleration due to gravity (pixels/frame)/frame
-	const int gravity = 1;
-	const int jumpVel = -20;
+	//acceleration due to gravity (pixels/s)/s
+	const int gravity = 1000;
+	int curVel = 0;
+	const int jumpVel = -600;
 	bool isInAir = false;
 
+	//sprite stuff
+	Texture2D scarfy = LoadTexture("textures/scarfy.png");
+	Rectangle scarfyRect;
+	scarfyRect.width = scarfy.width / 6;
+	scarfyRect.height = scarfy.height;
+	scarfyRect.x = 0;
+	scarfyRect.y = 0;
+	Vector2 scarfyPos;
+	scarfyPos.x = windowWidth / 2 - scarfyRect.width / 2;
+	scarfyPos.y = windowHeight - scarfyRect.height;
 
-	InitWindow(windowWidth, windowHeight, "Dapper Dasher");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose()) {
+		const float dt = GetFrameTime();
 		//start drawing
 		BeginDrawing();
 		ClearBackground(WHITE);
 		
-		if (isInAir) vel += gravity;
-		else vel = 0;
+		//apply acceleration
+		if (isInAir) curVel += gravity * dt;
+		else curVel = 0;
 
-		if (IsKeyPressed(KEY_SPACE) && !isInAir) vel = jumpVel;
+		//check for jump
+		if (IsKeyPressed(KEY_SPACE) && !isInAir) curVel = jumpVel;
 
 		//update position
-		posY += vel;
-		isInAir = posY <= windowHeight - height;
+		scarfyPos.y += curVel * dt;
+		isInAir = scarfyPos.y <= windowHeight - scarfy.height;
 
-
-		DrawRectangle(windowWidth / 2, posY, width, height, BLUE);
+		//draw character
+		DrawTextureRec(scarfy, scarfyRect, scarfyPos, WHITE);
 
 		//stop drawing
 		EndDrawing();
 	}
+	UnloadTexture(scarfy);
 	CloseWindow();
 	return 0;
 }
