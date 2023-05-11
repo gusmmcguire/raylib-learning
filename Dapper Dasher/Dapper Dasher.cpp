@@ -71,6 +71,8 @@ void handleNebulae(const int& sizeOfNebulae, AnimData nebulae[6], int nebVel, co
 	}
 }
 
+void setupNebulae(const int& sizeOfNebulae, AnimData  nebulae[6], Texture2D& nebula, const int  windowDimensions[2]);
+
 int main() {
 	const int windowDimensions[]{ 512, 380 };
 	InitWindow(windowDimensions[0], windowDimensions[1], "Dapper Dasher");
@@ -81,16 +83,7 @@ int main() {
 	Texture2D nebula = LoadTexture("textures/12_nebula_spritesheet.png");
 	const int sizeOfNebulae{ 6 };
 	AnimData nebulae[sizeOfNebulae]{};
-	for (int i = 0; i < sizeOfNebulae; i++) {
-		nebulae[i] = {
-			{0.0,0.0, nebula.width / 8.0f, nebula.height / 8.0f},
-			{(float) windowDimensions[0] + (300 * i), (float) windowDimensions[1] - nebula.height / 8.0f},
-			0,
-			1.0/16.0,
-			0,
-			7
-		};
-	}
+	setupNebulae(sizeOfNebulae, nebulae, nebula, windowDimensions);
 
 	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x + 100 };
 
@@ -102,8 +95,7 @@ int main() {
 		0,
 		1.0 / 10.0,
 		0,
-		5,
-		{ scarfyData.pos.x,	scarfyData.pos.y, scarfyData.rec.width, scarfyData.rec.height }
+		5
 	};
 
 	const int gravity = 1000;
@@ -157,10 +149,20 @@ int main() {
 		}
 
 		if (collision) {
-			DrawText("Game Over!", 200, 200, 40, RED);
+			DrawText("Game Over!\nPress Space To Restart", 0, 0, 40, RED);
+			if (IsKeyPressed(KEY_SPACE)) {
+				setupNebulae(sizeOfNebulae, nebulae, nebula, windowDimensions);
+				collision = false;
+				finishLine = nebulae[sizeOfNebulae - 1].pos.x + 100;
+			}
 		}
 		else if (finishLine <= scarfyData.pos.x) {
-			DrawText("You Win!", 200, 200, 40, GREEN);
+			DrawText("You Win!\nPress Space To Restart", 0, 0, 40, GREEN);
+			if (IsKeyPressed(KEY_SPACE)) {
+				setupNebulae(sizeOfNebulae, nebulae, nebula, windowDimensions);
+				collision = false;
+				finishLine = nebulae[sizeOfNebulae - 1].pos.x + 100;
+			}
 		}
 		else {
 			handleNebulae(sizeOfNebulae, nebulae, nebVel, dt, nebula);
@@ -181,6 +183,20 @@ int main() {
 
 	CloseWindow();
 	return 0;
+}
+
+void setupNebulae(const int& sizeOfNebulae, AnimData  nebulae[6], Texture2D& nebula, const int  windowDimensions[2]) {
+	for (int i = 0; i < sizeOfNebulae; i++) {
+		nebulae[i] = {
+			{ 0.0,0.0, nebula.width / 8.0f, nebula.height / 8.0f },
+			{ (float)windowDimensions[0] + (300 * i), (float)windowDimensions[1] - nebula.height / 8.0f },
+			0,
+			1.0 / 16.0,
+			0,
+			7
+		};
+	}
+
 }
 
 
