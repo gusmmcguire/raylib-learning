@@ -9,6 +9,7 @@ struct AnimData {
 	float maxFrame;
 };
 
+
 bool isOnGround(const AnimData& data, const int& windowHeight) {
 	return data.pos.y >= windowHeight - data.rec.height;
 }
@@ -22,7 +23,7 @@ void updateAnimData(AnimData& data, const float& deltaTime) {
 	}
 }
 
-void drawBackground(Vector2 &bg1Pos, Vector2 &bg2Pos, Vector2 &mg1Pos, Vector2 &mg2Pos, Vector2 &fg1Pos, Vector2 & fg2Pos, const Texture2D& background, const Texture2D& midground, const Texture2D& foreground, const float dt) {
+void drawBackground(Vector2& bg1Pos, Vector2& bg2Pos, Vector2& mg1Pos, Vector2& mg2Pos, Vector2& fg1Pos, Vector2& fg2Pos, const Texture2D& background, const Texture2D& midground, const Texture2D& foreground, const float dt) {
 	bg1Pos.x -= 20 * dt;
 	mg1Pos.x -= 40 * dt;
 	fg1Pos.x -= 80 * dt;
@@ -47,6 +48,27 @@ void drawBackground(Vector2 &bg1Pos, Vector2 &bg2Pos, Vector2 &mg1Pos, Vector2 &
 	DrawTextureEx(foreground, fg1Pos, 0.0, 2.0, WHITE);
 	fg2Pos.x = fg1Pos.x + foreground.width * 2;
 	DrawTextureEx(foreground, fg2Pos, 0.0, 2.0, WHITE);
+}
+
+void handlePlayer(int& curVel, const int& gravity, const float& dt, const int& jumpVel, AnimData& scarfyData, const int& windowHeight, const Texture2D& scarfy) {
+	bool isInAir = !isOnGround(scarfyData, windowHeight);
+	if (isInAir) curVel += gravity * dt;
+	else curVel = 0;
+	if (IsKeyPressed(KEY_SPACE) && !isInAir) curVel = jumpVel;
+
+	scarfyData.pos.y += curVel * dt;
+
+	if (!isInAir) updateAnimData(scarfyData, dt);
+	DrawTextureRec(scarfy, scarfyData.rec, scarfyData.pos, WHITE);
+}
+
+void handleNebulae(const int& sizeOfNebulae, AnimData nebulae[6], int nebVel, const float& dt, const Texture2D& nebula) {
+	for (int i = 0; i < sizeOfNebulae; i++) {
+		nebulae[i].pos.x += nebVel * dt;
+
+		updateAnimData(nebulae[i], dt);
+		DrawTextureRec(nebula, nebulae[i].rec, nebulae[i].pos, WHITE);
+	}
 }
 
 int main() {
@@ -74,6 +96,8 @@ int main() {
 		nebulae[i].pos.x = windowDimensions[0] + (300 * i);
 	}
 
+	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x };
+
 	//SCARFY VARIABLES
 	Texture2D scarfy = LoadTexture("textures/scarfy.png");
 	AnimData scarfyData{
@@ -89,12 +113,13 @@ int main() {
 	int curVel = 0;
 	const int jumpVel = -600;
 	bool isInAir = false;
+	bool collision{};
 
 	//BACKGROUND VARIABLES
 	Texture2D background = LoadTexture("textures/far-buildings.png");
 	Vector2 bg1Pos{ 0.0 , 0.0 };
 	Vector2 bg2Pos{ background.width * 2 , 0.0 };
-	
+
 	//MIDGROUND VARIABLES
 	Texture2D midground = LoadTexture("textures/back-buildings.png");
 	Vector2 mg1Pos{ 0.0 , 0.0 };
@@ -115,22 +140,34 @@ int main() {
 
 		drawBackground(bg1Pos, bg2Pos, mg1Pos, mg2Pos, fg1Pos, fg2Pos, background, midground, foreground, dt);
 
-		for (int i = 0; i < sizeOfNebulae; i++) {
-			nebulae[i].pos.x += nebVel * dt;
-
-			updateAnimData(nebulae[i], dt);
-			DrawTextureRec(nebula, nebulae[i].rec, nebulae[i].pos, WHITE);
+		for (const AnimData& nebula : nebulae) {
+			float pad{ 20 };
+			Rectangle nebRec{ 
+				nebula.pos.x + pad,
+				nebula.pos.y + pad,
+				nebula.rec.width - 2 * pad,
+				nebula.rec.height - 2 * pad 
+			};
+			Rectangle scarfyRec{ 
+				scarfyData.pos.x, 
+				scarfyData.pos.y, 
+				scarfyData.rec.width, 
+				scarfyData.rec.height 
+			};
+			collision = CheckCollisionRecs(nebRec, scarfyRec);
+			if (collision) break;
 		}
 
-		if (isInAir) curVel += gravity * dt;
-		else curVel = 0;
-		if (IsKeyPressed(KEY_SPACE) && !isInAir) curVel = jumpVel;
+		if (collision) {
 
-		scarfyData.pos.y += curVel * dt;
-		isInAir = !isOnGround(scarfyData, windowDimensions[1]);
+		}
+		else {
 
-		if (!isInAir) updateAnimData(scarfyData, dt);
-		DrawTextureRec(scarfy, scarfyData.rec, scarfyData.pos, WHITE);
+			handleNebulae(sizeOfNebulae, nebulae, nebVel, dt, nebula);
+			handlePlayer(curVel, gravity, dt, jumpVel, scarfyData, windowDimensions[1], scarfy);
+			finishLine += nebVel * dt;
+		}
+
 
 		//stop drawing
 		EndDrawing();
@@ -145,3 +182,5 @@ int main() {
 	CloseWindow();
 	return 0;
 }
+
+
