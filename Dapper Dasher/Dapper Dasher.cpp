@@ -96,7 +96,7 @@ int main() {
 		nebulae[i].pos.x = windowDimensions[0] + (300 * i);
 	}
 
-	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x };
+	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x  + 100};
 
 	//SCARFY VARIABLES
 	Texture2D scarfy = LoadTexture("textures/scarfy.png");
@@ -141,28 +141,30 @@ int main() {
 		drawBackground(bg1Pos, bg2Pos, mg1Pos, mg2Pos, fg1Pos, fg2Pos, background, midground, foreground, dt);
 
 		for (const AnimData& nebula : nebulae) {
-			float pad{ 20 };
-			Rectangle nebRec{ 
+			float pad{ 40 };
+			Rectangle nebRec{
 				nebula.pos.x + pad,
 				nebula.pos.y + pad,
 				nebula.rec.width - 2 * pad,
-				nebula.rec.height - 2 * pad 
+				nebula.rec.height - 2 * pad
 			};
-			Rectangle scarfyRec{ 
-				scarfyData.pos.x, 
-				scarfyData.pos.y, 
-				scarfyData.rec.width, 
-				scarfyData.rec.height 
+			Rectangle scarfyRec{
+				scarfyData.pos.x,
+				scarfyData.pos.y,
+				scarfyData.rec.width,
+				scarfyData.rec.height
 			};
 			collision = CheckCollisionRecs(nebRec, scarfyRec);
 			if (collision) break;
 		}
 
 		if (collision) {
-
+			DrawText("Game Over!", 200, 200, 40, RED);
+		}
+		else if (finishLine <= scarfyData.pos.x) {
+			DrawText("You Win!", 200, 200, 40, GREEN);
 		}
 		else {
-
 			handleNebulae(sizeOfNebulae, nebulae, nebVel, dt, nebula);
 			handlePlayer(curVel, gravity, dt, jumpVel, scarfyData, windowDimensions[1], scarfy);
 			finishLine += nebVel * dt;
