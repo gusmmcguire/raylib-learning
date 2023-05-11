@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{cd43c113-a422-4cdc-a454-8c007bbcbbfc}</ProjectGuid>
-    <RootNamespace>SectionOne</RootNamespace>
+    <ProjectGuid>{9bb4172a-ec3c-49b8-8ae1-b1deec5e6331}</ProjectGuid>
+    <RootNamespace>DapperDasher</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Axe Game</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -128,7 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Axe Game.cpp" />
+    <ClCompile Include="Dapper Dasher.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\12_nebula_spritesheet.png" />
+    <Image Include="textures\back-buildings.png" />
+    <Image Include="textures\far-buildings.png" />
+    <Image Include="textures\foreground.png" />
+    <Image Include="textures\scarfy.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
