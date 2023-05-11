@@ -13,13 +13,40 @@ bool isOnGround(const AnimData& data, const int& windowHeight) {
 	return data.pos.y >= windowHeight - data.rec.height;
 }
 
-void updateAnimData(AnimData &data, const float& deltaTime) {
+void updateAnimData(AnimData& data, const float& deltaTime) {
 	data.runningTime += deltaTime;
 	if (data.runningTime >= data.updateTime) {
 		data.runningTime = 0;
 		data.rec.x = data.frame * data.rec.width;
 		if (++data.frame > data.maxFrame) data.frame = 0;
 	}
+}
+
+void drawBackground(Vector2 &bg1Pos, Vector2 &bg2Pos, Vector2 &mg1Pos, Vector2 &mg2Pos, Vector2 &fg1Pos, Vector2 & fg2Pos, const Texture2D& background, const Texture2D& midground, const Texture2D& foreground, const float dt) {
+	bg1Pos.x -= 20 * dt;
+	mg1Pos.x -= 40 * dt;
+	fg1Pos.x -= 80 * dt;
+	if (bg1Pos.x <= -background.width * 2) {
+		bg1Pos.x = 0.0;
+	}
+	if (mg1Pos.x <= -midground.width * 2) {
+		mg1Pos.x = 0.0;
+	}
+	if (fg1Pos.x <= -foreground.width * 2) {
+		fg1Pos.x = 0.0;
+	}
+	//background
+	DrawTextureEx(background, bg1Pos, 0.0, 2.0, WHITE);
+	bg2Pos.x = bg1Pos.x + background.width * 2;
+	DrawTextureEx(background, bg2Pos, 0.0, 2.0, WHITE);
+	//midground
+	DrawTextureEx(midground, mg1Pos, 0.0, 2.0, WHITE);
+	mg2Pos.x = mg1Pos.x + midground.width * 2;
+	DrawTextureEx(midground, mg2Pos, 0.0, 2.0, WHITE);
+	//foreground
+	DrawTextureEx(foreground, fg1Pos, 0.0, 2.0, WHITE);
+	fg2Pos.x = fg1Pos.x + foreground.width * 2;
+	DrawTextureEx(foreground, fg2Pos, 0.0, 2.0, WHITE);
 }
 
 int main() {
@@ -29,7 +56,7 @@ int main() {
 	//NEBULA VARIABLES
 	int nebVel = -200;
 	Texture2D nebula = LoadTexture("textures/12_nebula_spritesheet.png");
-	const int sizeOfNebulae{6};
+	const int sizeOfNebulae{ 6 };
 	AnimData nebulae[sizeOfNebulae]{};
 	for (int i = 0; i < sizeOfNebulae; i++) {
 		nebulae[i].rec.x = 0.0;
@@ -57,11 +84,27 @@ int main() {
 		0,
 		5
 	};
-	
+
 	const int gravity = 1000;
 	int curVel = 0;
 	const int jumpVel = -600;
 	bool isInAir = false;
+
+	//BACKGROUND VARIABLES
+	Texture2D background = LoadTexture("textures/far-buildings.png");
+	Vector2 bg1Pos{ 0.0 , 0.0 };
+	Vector2 bg2Pos{ background.width * 2 , 0.0 };
+	
+	//MIDGROUND VARIABLES
+	Texture2D midground = LoadTexture("textures/back-buildings.png");
+	Vector2 mg1Pos{ 0.0 , 0.0 };
+	Vector2 mg2Pos{ midground.width * 2 , 0.0 };
+
+	//FOREGROUND VARIABLES
+	Texture2D foreground = LoadTexture("textures/foreground.png");
+	Vector2 fg1Pos{ 0.0 , 0.0 };
+	Vector2 fg2Pos{ foreground.width * 2 , 0.0 };
+
 
 	SetTargetFPS(60);
 	while (!WindowShouldClose()) {
@@ -70,6 +113,7 @@ int main() {
 		BeginDrawing();
 		ClearBackground(WHITE);
 
+		drawBackground(bg1Pos, bg2Pos, mg1Pos, mg2Pos, fg1Pos, fg2Pos, background, midground, foreground, dt);
 
 		for (int i = 0; i < sizeOfNebulae; i++) {
 			nebulae[i].pos.x += nebVel * dt;
@@ -91,8 +135,13 @@ int main() {
 		//stop drawing
 		EndDrawing();
 	}
+
 	UnloadTexture(scarfy);
 	UnloadTexture(nebula);
+	UnloadTexture(background);
+	UnloadTexture(midground);
+	UnloadTexture(foreground);
+
 	CloseWindow();
 	return 0;
 }
