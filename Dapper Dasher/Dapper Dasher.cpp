@@ -23,7 +23,7 @@ void updateAnimData(AnimData& data, const float& deltaTime) {
 	}
 }
 
-void drawBackground(Vector2& bg1Pos, Vector2& bg2Pos, Vector2& mg1Pos, Vector2& mg2Pos, Vector2& fg1Pos, Vector2& fg2Pos, const Texture2D& background, const Texture2D& midground, const Texture2D& foreground, const float dt) {
+void drawBackground(Vector2& bg1Pos, Vector2& bg2Pos, Vector2& mg1Pos, Vector2& mg2Pos, Vector2& fg1Pos, Vector2& fg2Pos, const Texture2D& background, const Texture2D& midground, const Texture2D& foreground, const float& dt) {
 	bg1Pos.x -= 20 * dt;
 	mg1Pos.x -= 40 * dt;
 	fg1Pos.x -= 80 * dt;
@@ -77,26 +77,22 @@ int main() {
 
 	//NEBULA VARIABLES
 	int nebVel = -200;
+	float nebColliderPad{ 40 };
 	Texture2D nebula = LoadTexture("textures/12_nebula_spritesheet.png");
 	const int sizeOfNebulae{ 6 };
 	AnimData nebulae[sizeOfNebulae]{};
 	for (int i = 0; i < sizeOfNebulae; i++) {
-		nebulae[i].rec.x = 0.0;
-		nebulae[i].rec.y = 0.0;
-		nebulae[i].rec.width = nebula.width / 8;
-		nebulae[i].rec.height = nebula.height / 8;
-
-		nebulae[i].pos.y = windowDimensions[1] - nebula.height / 8;
-
-		nebulae[i].frame = 0;
-		nebulae[i].maxFrame = 7;
-
-		nebulae[i].runningTime = 0.0;
-		nebulae[i].updateTime = 1.0 / 16.0;
-		nebulae[i].pos.x = windowDimensions[0] + (300 * i);
+		nebulae[i] = {
+			{0.0,0.0, nebula.width / 8.0f, nebula.height / 8.0f},
+			{(float) windowDimensions[0] + (300 * i), (float) windowDimensions[1] - nebula.height / 8.0f},
+			0,
+			1.0/16.0,
+			0,
+			7
+		};
 	}
 
-	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x  + 100};
+	float finishLine{ nebulae[sizeOfNebulae - 1].pos.x + 100 };
 
 	//SCARFY VARIABLES
 	Texture2D scarfy = LoadTexture("textures/scarfy.png");
@@ -106,7 +102,8 @@ int main() {
 		0,
 		1.0 / 10.0,
 		0,
-		5
+		5,
+		{ scarfyData.pos.x,	scarfyData.pos.y, scarfyData.rec.width, scarfyData.rec.height }
 	};
 
 	const int gravity = 1000;
@@ -132,8 +129,9 @@ int main() {
 
 
 	SetTargetFPS(60);
+	float dt{};
 	while (!WindowShouldClose()) {
-		const float dt = GetFrameTime();
+		dt = GetFrameTime();
 
 		BeginDrawing();
 		ClearBackground(WHITE);
@@ -141,19 +139,19 @@ int main() {
 		drawBackground(bg1Pos, bg2Pos, mg1Pos, mg2Pos, fg1Pos, fg2Pos, background, midground, foreground, dt);
 
 		for (const AnimData& nebula : nebulae) {
-			float pad{ 40 };
 			Rectangle nebRec{
-				nebula.pos.x + pad,
-				nebula.pos.y + pad,
-				nebula.rec.width - 2 * pad,
-				nebula.rec.height - 2 * pad
+				nebula.pos.x + nebColliderPad,
+				nebula.pos.y + nebColliderPad,
+				nebula.rec.width - 2 * nebColliderPad,
+				nebula.rec.height - 2 * nebColliderPad
 			};
 			Rectangle scarfyRec{
-				scarfyData.pos.x,
-				scarfyData.pos.y,
-				scarfyData.rec.width,
-				scarfyData.rec.height
+				 scarfyData.pos.x,	
+				 scarfyData.pos.y, 
+				 scarfyData.rec.width, 
+				 scarfyData.rec.height
 			};
+
 			collision = CheckCollisionRecs(nebRec, scarfyRec);
 			if (collision) break;
 		}
