@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Axe Game", "Section One\Sec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dapper Dasher", "Dapper Dasher\Dapper Dasher.vcxproj", "{9BB4172A-EC3C-49B8-8AE1-B1DEEC5E6331}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Classy Clash", "Classy Clash\Classy Clash.vcxproj", "{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{9BB4172A-EC3C-49B8-8AE1-B1DEEC5E6331}.Release|x64.Build.0 = Release|x64
 		{9BB4172A-EC3C-49B8-8AE1-B1DEEC5E6331}.Release|x86.ActiveCfg = Release|Win32
 		{9BB4172A-EC3C-49B8-8AE1-B1DEEC5E6331}.Release|x86.Build.0 = Release|Win32
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Debug|x64.ActiveCfg = Debug|x64
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Debug|x64.Build.0 = Debug|x64
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Debug|x86.ActiveCfg = Debug|Win32
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Debug|x86.Build.0 = Debug|Win32
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Release|x64.ActiveCfg = Release|x64
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Release|x64.Build.0 = Release|x64
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Release|x86.ActiveCfg = Release|Win32
+		{2D6D37E6-74E5-49DC-83E1-FDCEC965F376}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
